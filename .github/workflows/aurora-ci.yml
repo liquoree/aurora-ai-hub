@@ -84,12 +84,13 @@ jobs:
           set -euo pipefail
           mkdir -p "$SDK_DIR"
 
-          timeout 55m xvfb-run -a "$RUNNER_TEMP/aurora-sdk.run" \
+          timeout 25m xvfb-run -a "$RUNNER_TEMP/aurora-sdk.run" \
+            --verbose \
             --script "$GITHUB_WORKSPACE/.github/scripts/install-aurora.qs" \
-            TargetDir="$SDK_DIR"
+            TargetDir="$SDK_DIR" 2>&1 | tee "$RUNNER_TEMP/aurora-install.log"
 
           echo 'Installed SDK entries:'
-          find "$SDK_DIR" -maxdepth 3 -type f -name sfdk -print
+          find "$SDK_DIR" -maxdepth 5 -type f -name sfdk -print
 
       - name: Locate SDK and inspect targets
         id: sdk
