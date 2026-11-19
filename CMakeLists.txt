@@ -19,8 +19,12 @@ qt5_add_translation(QmFiles ${TsFiles})
 set(SOURCES
     qml/${short_name}.qml
     qml/cover/DefaultCoverPage.qml
-    qml/pages/AboutPage.qml
-    qml/pages/MainPage.qml
+    qml/modules/settings/pages/AboutPage.qml
+
+    qml/modules/models/pages/ModelsPage.qml
+    qml/modules/catalog/pages/CatalogPage.qml
+    qml/modules/chat/pages/ChatPage.qml
+    qml/modules/settings/pages/SettingsPage.qml
     src/main.cpp
 )
 
