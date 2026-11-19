@@ -9,6 +9,11 @@ Controller.prototype.WelcomePageCallback = function() {
     gui.clickButton(buttons.NextButton);
 };
 
+Controller.prototype.IntroductionPageCallback = function() {
+    console.log("Introduction page opened");
+    gui.clickButton(buttons.NextButton);
+};
+
 Controller.prototype.TargetDirectoryPageCallback = function() {
     gui.currentPageWidget().TargetDirectoryLineEdit.setText(
         installer.value("TargetDir")
