@@ -22,11 +22,21 @@ jobs:
           ref: b1b770d90d94cad9e9ea5b993bdbc383a522fb28
           persist-credentials: false
 
+      - name: Load Aurora BT 5.2.1.200 from the SDK repository
+        working-directory: ${{ runner.temp }}
+        run: |
+          package=https://sdk-repo.omprussia.ru/sdk/repositories/BT/repository-5.2.1.200-BT/common/org.merproject.buildtools.dockerbuildtools_latest/2022.12.12-1sdk-build-tools-5.2.1.200-x86_64.tar.7z
+          curl -fL --retry 3 --connect-timeout 30 "$package" -o aurora.7z
+          checksum=$(curl -fsSL --retry 3 "$package.sha1")
+          echo "$checksum  aurora.7z" | sha1sum -c -
+          7z x -so -r aurora.7z '*.tar' | docker load
+          rm aurora.7z
+
       - name: Build in Aurora BT for x86_64
         run: |
           docker run --rm --platform linux/amd64 \
             -v "$GITHUB_WORKSPACE:/work" -w /work \
-            hub.omp.ru/public/sdk-build-tools:5.2.1 bash -ec '
+            aurora-build-tools:5.2.1.200 bash -ec '
               . /etc/os-release
               echo "$PRETTY_NAME"
               test "$VERSION_ID" = 5.2.1.200
