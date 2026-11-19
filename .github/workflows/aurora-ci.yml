@@ -1,0 +1,116 @@
+name: Aurora CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aurora-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  aurora-build:
+    name: Aurora SDK RPM build
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      SDK_URL: https://sdk-repo.omprussia.ru/sdk/installers/5.2.1/5.2.1.200-release/AuroraSDK-BT/AuroraSDK-5.2.1.200-BT-release-linux-64-online-26.07.01-18.17.50.run
+      SDK_DIR: ${{ github.workspace }}/.aurora-sdk
+      QT_QPA_PLATFORM: offscreen
+      # fill with exact x86_64 target name after first SDK installation
+      AURORA_TARGET: ''
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check host resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          df -h .
+          free -h
+          docker info --format '{{.ServerVersion}}'
+          test -f CMakeLists.txt
+
+      - name: Download and verify SDK installer
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --retry 3 --connect-timeout 30 \
+            --output "$RUNNER_TEMP/aurora-sdk.run" "$SDK_URL"
+          echo '79c7f1f8569abbd44dc6eb013c22b55d  '"$RUNNER_TEMP/aurora-sdk.run" | md5sum -c -
+          chmod +x "$RUNNER_TEMP/aurora-sdk.run"
+
+      - name: Inspect installer CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          timeout 60s "$RUNNER_TEMP/aurora-sdk.run" --help > "$RUNNER_TEMP/installer-help.txt" 2>&1 || {
+            cat "$RUNNER_TEMP/installer-help.txt"
+            echo 'Installer --help failed; check compatibility with headless runner.' >&2
+            exit 1
+          }
+          head -n 100 "$RUNNER_TEMP/installer-help.txt"
+          if ! grep -Eq -- '(^|[[:space:]])install([[:space:]]|$)|--confirm-command' \
+            "$RUNNER_TEMP/installer-help.txt"; then
+            echo 'Expected unattended Qt Installer Framework CLI was not detected.' >&2
+            exit 1
+          fi
+
+      - name: Install Aurora SDK headlessly
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p "$SDK_DIR"
+          timeout 55m "$RUNNER_TEMP/aurora-sdk.run" \
+            --root "$SDK_DIR" --accept-licenses --default-answer --confirm-command install
+          echo 'Installed SDK entries:'
+          find "$SDK_DIR" -maxdepth 3 -type f -name sfdk -print
+
+      - name: Locate SDK and inspect targets
+        id: sdk
+        shell: bash
+        run: |
+          set -euo pipefail
+          SFDK="$(find "$SDK_DIR" -type f -name sfdk -print -quit)"
+          if [[ -z "$SFDK" ]]; then
+            echo 'sfdk was not found. Installer may need additional components.' >&2
+            exit 1
+          fi
+          chmod +x "$SFDK"
+          echo "sfdk=$SFDK" >> "$GITHUB_OUTPUT"
+          "$SFDK" config --show || true
+          "$SFDK" tools list || true
+          if [[ -z "$AURORA_TARGET" ]]; then
+            echo 'Set AURORA_TARGET to the exact Aurora OS 5.2.1 x86_64 target name.' >&2
+            exit 1
+          fi
+          "$SFDK" config "target=$AURORA_TARGET"
+
+      - name: Build RPM with Aurora SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          "${{ steps.sdk.outputs.sfdk }}" build
+
+      - name: Validate RPM
+        shell: bash
+        run: |
+          set -euo pipefail
+          "${{ steps.sdk.outputs.sfdk }}" check
+          find . -type f -name '*.rpm' -print
+          test -n "$(find . -type f -name '*.rpm' -print -quit)"
+
+      - name: Upload RPM artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-x86_64-rpm
+          path: '**/*.rpm'
+          if-no-files-found: error
