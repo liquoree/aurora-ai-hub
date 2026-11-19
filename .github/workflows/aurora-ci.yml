@@ -21,7 +21,7 @@ jobs:
     env:
       SDK_URL: https://sdk-repo.omprussia.ru/sdk/installers/5.2.1/5.2.1.200-release/AuroraSDK-BT/AuroraSDK-5.2.1.200-BT-release-linux-64-online-26.07.01-18.17.50.run
       SDK_DIR: ${{ github.workspace }}/.aurora-sdk
-      QT_QPA_PLATFORM: offscreen
+      QT_QPA_PLATFORM: xcb
       # fill with exact x86_64 target name after first SDK installation
       AURORA_TARGET: ''
 
