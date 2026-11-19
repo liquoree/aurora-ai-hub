@@ -1,0 +1,21 @@
+# локальные файлы сборки
+build/
+build-*/
+cmake-build-*/
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+
+# локальные настройки qt creator
+*.user
+*.user.*
+*.autosave
+
+# временные файлы
+*.swp
+*~
+*.log
+
+# большие файлы моделей
+*.gguf
+*.ggml
