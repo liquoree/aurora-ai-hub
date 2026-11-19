@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=ru.auroraaihub.aurora-ai-hub
+Exec=/usr/bin/ru.auroraaihub.aurora-ai-hub
+Name=AuroraAIHub
+Name[ru]=Аврора ИИ Hub
+
+[X-Application]
+Permissions=Documents;Downloads;Internet
+OrganizationName=ru.auroraaihub
+ApplicationName=aurora-ai-hub
+ExecDBus=/usr/bin/ru.auroraaihub.aurora-ai-hub

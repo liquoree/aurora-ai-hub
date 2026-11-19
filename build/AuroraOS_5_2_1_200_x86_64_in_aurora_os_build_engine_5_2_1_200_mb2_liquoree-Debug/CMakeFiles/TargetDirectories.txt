@@ -1,0 +1,9 @@
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/install/local.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/install.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/list_install_components.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/rebuild_cache.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/edit_cache.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/distfiles.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/install/strip.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir
+/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/ru.auroraaihub.aurora-ai-hub_autogen.dir

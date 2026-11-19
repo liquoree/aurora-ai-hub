@@ -1,0 +1,10 @@
+Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" failed.
+Compiler: /usr/bin/c++ 
+Build flags: -g;-pipe;-Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3;-specs=/usr/lib/rpm/aurora/pie-pic-cc1;-fstack-protector-strong;--param=ssp-buffer-size=4;-fexceptions;-O2;-Wall;-Wformat;-Wformat-security;-m64;-mtune=generic
+Id flags: -c;--target=x86_64-meego-linux-gnu 
+
+The output was:
+1
+x86_64-meego-linux-gnu-c++: error: unrecognized command-line option '--target=x86_64-meego-linux-gnu'
+
+
