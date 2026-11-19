@@ -74,25 +74,20 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          timeout 60s "$RUNNER_TEMP/aurora-sdk.run" --help > "$RUNNER_TEMP/installer-help.txt" 2>&1 || {
-            cat "$RUNNER_TEMP/installer-help.txt"
-            echo 'Installer --help failed; check compatibility with headless runner.' >&2
-            exit 1
-          }
+          timeout 60s "$RUNNER_TEMP/aurora-sdk.run" --help > "$RUNNER_TEMP/installer-help.txt" 2>&1
           head -n 100 "$RUNNER_TEMP/installer-help.txt"
-          if ! grep -Eq -- '(^|[[:space:]])install([[:space:]]|$)|--confirm-command' \
-            "$RUNNER_TEMP/installer-help.txt"; then
-            echo 'Expected unattended Qt Installer Framework CLI was not detected.' >&2
-            exit 1
-          fi
+          grep -q -- '--script' "$RUNNER_TEMP/installer-help.txt"
 
       - name: Install Aurora SDK headlessly
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$SDK_DIR"
-          timeout 55m "$RUNNER_TEMP/aurora-sdk.run" \
-            --root "$SDK_DIR" --accept-licenses --default-answer --confirm-command install
+
+          timeout 55m xvfb-run -a "$RUNNER_TEMP/aurora-sdk.run" \
+            --script "$GITHUB_WORKSPACE/.github/scripts/install-aurora.qs" \
+            TargetDir="$SDK_DIR"
+
           echo 'Installed SDK entries:'
           find "$SDK_DIR" -maxdepth 3 -type f -name sfdk -print
 
