@@ -47,6 +47,28 @@ jobs:
           echo '79c7f1f8569abbd44dc6eb013c22b55d  '"$RUNNER_TEMP/aurora-sdk.run" | md5sum -c -
           chmod +x "$RUNNER_TEMP/aurora-sdk.run"
 
+      - name: Install Aurora SDK system dependencies
+        shell: bash
+        run: |
+          set -euo pipefail
+          sudo apt-get update
+          sudo apt-get install -y \
+            libxcb-icccm4 \
+            libxcb-image0 \
+            libxcb-keysyms1 \
+            libxcb-render-util0 \
+            libxcb-xinerama0 \
+            libxcb-xkb1 \
+            libxkbcommon-x11-0 \
+            libxcb-cursor0 \
+            libgl1 \
+            libopengl0 \
+            libegl1 \
+            libfontconfig1 \
+            libdbus-1-3 \
+            libx11-xcb1 \
+            xvfb
+
       - name: Inspect installer CLI
         shell: bash
         run: |
