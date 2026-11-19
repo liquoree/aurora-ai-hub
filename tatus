@@ -1,0 +1,522 @@
+[1mdiff --git a/CMakeLists.txt b/CMakeLists.txt[m
+[1mindex beeff34..65ae542 100644[m
+[1m--- a/CMakeLists.txt[m
+[1m+++ b/CMakeLists.txt[m
+[36m@@ -19,8 +19,12 @@[m [mqt5_add_translation(QmFiles ${TsFiles})[m
+ set(SOURCES[m
+     qml/${short_name}.qml[m
+     qml/cover/DefaultCoverPage.qml[m
+[31m-    qml/pages/AboutPage.qml[m
+[31m-    qml/pages/MainPage.qml[m
+[32m+[m[32m    qml/modules/settings/pages/AboutPage.qml[m
+[32m+[m
+[32m+[m[32m    qml/modules/models/pages/ModelsPage.qml[m
+[32m+[m[32m    qml/modules/catalog/pages/CatalogPage.qml[m
+[32m+[m[32m    qml/modules/chat/pages/ChatPage.qml[m
+[32m+[m[32m    qml/modules/settings/pages/SettingsPage.qml[m
+     src/main.cpp[m
+ )[m
+ [m
+[1mdiff --git a/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/.cmake/api/v1/reply/cmakeFiles-v1-d9c476db75b38eaeba81.json b/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/.cmake/api/v1/reply/cmakeFiles-v1-d9c476db75b38eaeba81.json[m
+[1mdeleted file mode 100644[m
+[1mindex 64d8030..0000000[m
+[1m--- a/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/.cmake/api/v1/reply/cmakeFiles-v1-d9c476db75b38eaeba81.json[m
+[1m+++ /dev/null[m
+[36m@@ -1,679 +0,0 @@[m
+[31m-{[m
+[31m-	"inputs" : [m
+[31m-	[[m
+[31m-		{[m
+[31m-			"path" : "CMakeLists.txt"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeDetermineSystem.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeSystem.cmake.in"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isGenerated" : true,[m
+[31m-			"path" : "build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/3.19.3/CMakeSystem.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeNinjaFindMake.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeSystemSpecificInitialize.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeDetermineCXXCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeDetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Platform/Linux-Determine-CXX.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeDetermineCompilerId.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeCompilerIdDetection.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/ADSP-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/ARMCC-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/ARMClang-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/AppleClang-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Borland-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Clang-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Clang-DetermineCompilerInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Comeau-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Compaq-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Cray-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Embarcadero-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Fujitsu-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GHS-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GNU-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/HP-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IAR-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Intel-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/MSVC-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/NVIDIA-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/OpenWatcom-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/PGI-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/PathScale-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/SCO-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/SunPro-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/TI-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/VisualAge-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/Watcom-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/XL-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/XLClang-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/zOS-CXX-DetermineCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/IBMCPP-CXX-DetermineVersionInternal.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeFindBinUtils.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GNU-FindBinUtils.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeCXXCompiler.cmake.in"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isGenerated" : true,[m
+[31m-			"path" : "build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/3.19.3/CMakeCXXCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeSystemSpecificInformation.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeGenericSystem.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeInitializeConfigs.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Platform/Linux.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Platform/UnixPaths.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeCXXInformation.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeLanguageInformation.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GNU-CXX.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/GNU.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Compiler/CMakeCommonCompilerMacros.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Platform/Linux-GNU-CXX.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/Platform/Linux-GNU.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeCommonLanguageInclude.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeTestCXXCompiler.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeTestCompilerCommon.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : true,[m
+[31m-			"path" : "C:/AuroraOS/mersdk/targets/AuroraOS-5.2.1.200-x86_64.default/usr/share/cmake/Modules/CMakeDetermineCompilerABI.cmake"[m
+[31m-		},[m
+[31m-		{[m
+[31m-			"isCMake" : true,[m
+[31m-			"isExternal" : tru
