@@ -104,6 +104,27 @@ jobs:
           echo 'Docker access:'
           docker ps
 
+      - name: Diagnose installer environment
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo "Docker environment:"
+          env | grep -E '^(DOCKER|PATH|HOME|XDG_RUNTIME_DIR)=' || true
+
+          echo "Docker executable:"
+          ls -l "$(command -v docker)"
+
+          echo "Docker API:"
+          docker version --format '{{.Server.APIVersion}}'
+
+          echo "Virtualization:"
+          ls -l /dev/kvm || true
+
+          echo "Runner directories:"
+          printf 'HOME=%s\n' "$HOME"
+          printf 'WORKSPACE=%s\n' "$GITHUB_WORKSPACE"
+
       - name: Install Aurora SDK headlessly
         shell: bash
         run: |
