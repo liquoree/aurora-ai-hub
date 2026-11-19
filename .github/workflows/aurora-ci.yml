@@ -35,12 +35,43 @@ jobs:
           docker info --format 'Docker server: {{.ServerVersion}}'
           df -h .
 
+      - name: Check Aurora registry connectivity
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo 'Checking registry endpoint:'
+          curl -sS -L --connect-timeout 10 --max-time 30 \
+            -o /dev/null \
+            -w 'Registry HTTP: %{http_code}, total: %{time_total}s\n' \
+            https://hub.omp.ru/v2/ || true
+
+          echo 'Checking token service:'
+          curl -sS --connect-timeout 10 --max-time 30 \
+            -o /dev/null \
+            -w 'Token HTTP: %{http_code}, total: %{time_total}s\n' \
+            'https://hub.omp.ru/service/token?scope=repository%3Apublic%2Fsdk-build-tools%3Apull&service=harbor-registry' || true
+
       - name: Pull Aurora Build Tools image
         shell: bash
         run: |
           set -euo pipefail
-          docker pull "$AURORA_IMAGE"
-          docker image inspect "$AURORA_IMAGE" --format 'Image ID: {{.Id}}'
+
+          for attempt in 1 2 3; do
+            echo "Docker pull attempt $attempt/3"
+
+            if timeout 5m docker pull hub.omp.ru/public/sdk-build-tools:latest; then
+              echo 'Aurora Build Tools image downloaded successfully.'
+              exit 0
+            fi
+
+            if [[ "$attempt" -lt 3 ]]; then
+              sleep 20
+            fi
+          done
+
+          echo 'Could not pull Aurora Build Tools after 3 attempts.' >&2
+          exit 1
 
       - name: Inspect apptool
         shell: bash
