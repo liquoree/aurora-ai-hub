@@ -14,173 +14,63 @@ concurrency:
 
 jobs:
   aurora-build:
-    name: Aurora SDK RPM build
+    name: Aurora BT x86_64 RPM build
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 60
     env:
-      SDK_URL: https://sdk-repo.omprussia.ru/sdk/installers/5.2.1/5.2.1.200-release/AuroraSDK-BT/AuroraSDK-5.2.1.200-BT-release-linux-64-online-26.07.01-18.17.50.run
-      SDK_DIR: ${{ github.workspace }}/.aurora-sdk
-      QT_QPA_PLATFORM: xcb
-      AURORA_TARGET: ''
+      # latest is for the initial probe; pin a verified 5.2.1 image before making this check required
+      AURORA_IMAGE: hub.omp.ru/public/sdk-build-tools:latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check host resources
+      - name: Check project and Docker
         shell: bash
         run: |
           set -euo pipefail
-          df -h .
-          free -h
-          docker info --format '{{.ServerVersion}}'
           test -f CMakeLists.txt
-          test -f .github/scripts/install-aurora.qs
+          find rpm -maxdepth 1 -type f -name '*.spec' -print -quit | grep -q .
+          docker info --format 'Docker server: {{.ServerVersion}}'
+          df -h .
 
-      - name: Download and verify SDK installer
+      - name: Pull Aurora Build Tools image
         shell: bash
         run: |
           set -euo pipefail
-          curl --fail --location --retry 3 --connect-timeout 30 \
-            --output "$RUNNER_TEMP/aurora-sdk.run" "$SDK_URL"
-          echo '79c7f1f8569abbd44dc6eb013c22b55d  '"$RUNNER_TEMP/aurora-sdk.run" | md5sum -c -
-          chmod +x "$RUNNER_TEMP/aurora-sdk.run"
+          docker pull "$AURORA_IMAGE"
+          docker image inspect "$AURORA_IMAGE" --format 'Image ID: {{.Id}}'
 
-      - name: Install SDK installer dependencies and tracing tools
+      - name: Inspect apptool
         shell: bash
         run: |
           set -euo pipefail
-          sudo apt-get update
-          sudo apt-get install -y \
-            libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 \
-            libxcb-xinerama0 libxcb-xkb1 libxcb-shape0 libxkbcommon-x11-0 \
-            libxcb-cursor0 libgl1 libopengl0 libegl1 libfontconfig1 \
-            libdbus-1-3 libx11-xcb1 xvfb strace
+          docker run --rm "$AURORA_IMAGE" apptool -h
 
-      - name: Check installer shared libraries and CLI
+      - name: Build x86_64 RPM
         shell: bash
         run: |
           set -euo pipefail
-          ldd "$RUNNER_TEMP/aurora-sdk.run" | tee "$RUNNER_TEMP/installer-libs.txt"
-          if grep -q 'not found' "$RUNNER_TEMP/installer-libs.txt"; then
-            echo 'Some installer libraries are missing.' >&2
-            exit 1
-          fi
-          timeout 60s "$RUNNER_TEMP/aurora-sdk.run" --help > "$RUNNER_TEMP/installer-help.txt" 2>&1
-          head -n 100 "$RUNNER_TEMP/installer-help.txt"
-          grep -q -- '--script' "$RUNNER_TEMP/installer-help.txt"
+          docker run --rm \
+            -u "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
+            -v "$GITHUB_WORKSPACE":/sources \
+            -w /sources \
+            "$AURORA_IMAGE" \
+            apptool build --x64
 
-      - name: Diagnose Docker and installer environment
+      - name: Verify RPM output
         shell: bash
         run: |
           set -euo pipefail
-          echo 'Docker executable:'
-          command -v docker
-          echo 'Docker version:'
-          docker version
-          echo 'Docker socket:'
-          ls -l /var/run/docker.sock
-          echo 'Docker access:'
-          docker ps
-          echo 'Current user:'
-          id
-          echo 'Environment:'
-          printf 'HOME=%s\nPATH=%s\nXDG_RUNTIME_DIR=%s\n' "$HOME" "$PATH" "${XDG_RUNTIME_DIR:-}"
-          echo 'KVM:'
-          ls -l /dev/kvm || true
-          echo 'Workspace:'
-          printf '%s\n' "$GITHUB_WORKSPACE"
-
-      - name: Install Aurora SDK headlessly with tracing
-        shell: bash
-        run: |
-          set -euo pipefail
-          mkdir -p "$SDK_DIR"
-
-          set +e
-          timeout 10m xvfb-run -a strace -f \
-            -e trace=execve \
-            -s 300 \
-            -o "$RUNNER_TEMP/aurora-exec.log" \
-            "$RUNNER_TEMP/aurora-sdk.run" \
-            --verbose \
-            --script "$GITHUB_WORKSPACE/.github/scripts/install-aurora.qs" \
-            TargetDir="$SDK_DIR" 2>&1 | tee "$RUNNER_TEMP/aurora-install.log"
-          install_status=${PIPESTATUS[0]}
-          set -e
-
-          echo 'Installer subprocesses related to virtualization:'
-          if [[ -f "$RUNNER_TEMP/aurora-exec.log" ]]; then
-            grep -Ei 'docker|podman|systemctl|virtualbox|qemu|which' \
-              "$RUNNER_TEMP/aurora-exec.log" | tail -n 80 || true
-          fi
-
-          echo 'Installed SDK entries:'
-          find "$SDK_DIR" -maxdepth 5 -type f -name sfdk -print
-          echo 'SDK directory contents:'
-          ls -la "$SDK_DIR"
-          echo "Installer exit code: $install_status"
-
-          if [[ "$install_status" -ne 0 ]]; then
-            exit "$install_status"
-          fi
-          if ! find "$SDK_DIR" -type f -name sfdk -print -quit | grep -q .; then
-            echo 'Aurora SDK installation did not provide sfdk.' >&2
-            exit 1
-          fi
-
-      - name: Locate SDK and inspect targets
-        id: sdk
-        shell: bash
-        run: |
-          set -euo pipefail
-          SFDK="$(find "$SDK_DIR" -type f -name sfdk -print -quit)"
-          if [[ -z "$SFDK" ]]; then
-            echo 'sfdk was not found.' >&2
-            exit 1
-          fi
-          chmod +x "$SFDK"
-          echo "sfdk=$SFDK" >> "$GITHUB_OUTPUT"
-          "$SFDK" config --show || true
-          "$SFDK" tools list || true
-          if [[ -z "$AURORA_TARGET" ]]; then
-            echo 'Set AURORA_TARGET to the exact Aurora OS 5.2.1 x86_64 target name.' >&2
-            exit 1
-          fi
-          "$SFDK" config "target=$AURORA_TARGET"
-
-      - name: Build RPM with Aurora SDK
-        shell: bash
-        run: |
-          set -euo pipefail
-          "${{ steps.sdk.outputs.sfdk }}" build
-
-      - name: Validate RPM
-        shell: bash
-        run: |
-          set -euo pipefail
-          "${{ steps.sdk.outputs.sfdk }}" check
-          find . -type f -name '*.rpm' -print
-          test -n "$(find . -type f -name '*.rpm' -print -quit)"
+          find RPMS -type f -name '*.rpm' -print
+          test -n "$(find RPMS -type f -name '*.rpm' -print -quit)"
 
       - name: Upload RPM artifacts
         if: success()
         uses: actions/upload-artifact@v4
         with:
           name: aurora-x86_64-rpm
-          path: '**/*.rpm'
+          path: RPMS/**/*.rpm
           if-no-files-found: error
-
-      - name: Upload installer diagnostic logs
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: aurora-installer-diagnostics
-          path: |
-            ${{ runner.temp }}/aurora-install.log
-            ${{ runner.temp }}/aurora-exec.log
-            ${{ runner.temp }}/installer-libs.txt
-            ${{ runner.temp }}/installer-help.txt
-          if-no-files-found: ignore
-          retention-days: 7
