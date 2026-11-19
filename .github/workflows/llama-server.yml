@@ -1,0 +1,51 @@
+name: llama-server CPU build
+on:
+  push:
+    branches: [feature/9-llama-cpp-aurora-feasibility]
+    paths:
+      - .github/workflows/llama-server.yml
+      - core/runtime/**
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - name: Checkout llama.cpp v1.0.0
+        uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: b1b770d90d94cad9e9ea5b993bdbc383a522fb28
+          persist-credentials: false
+
+      - name: Build in Aurora BT for x86_64
+        run: |
+          docker run --rm --platform linux/amd64 \
+            -v "$GITHUB_WORKSPACE:/work" -w /work \
+            hub.omp.ru/public/sdk-build-tools:5.2.1 bash -ec '
+              . /etc/os-release
+              echo "$PRETTY_NAME"
+              test "$VERSION_ID" = 5.2.1.200
+              test "$(uname -m)" = x86_64
+              cmake -S . -B build -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+                -DGGML_NATIVE=OFF -DGGML_AVX=OFF -DGGML_AVX2=OFF \
+                -DGGML_BMI2=OFF -DGGML_SSE42=OFF \
+                -DGGML_FMA=OFF -DGGML_F16C=OFF -DGGML_OPENMP=OFF \
+                -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF \
+                -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF \
+                -DLLAMA_BUILD_APP=OFF -DLLAMA_BUILD_SERVER=ON
+              cmake --build build --target llama-server --parallel 2
+            '
+          file build/bin/llama-server | grep 'ELF 64-bit.*x86-64'
+          tar -czf llama-server-aurora-x86_64.tar.gz -C build/bin llama-server
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: llama-server-aurora-bt-x86_64
+          path: llama-server-aurora-x86_64.tar.gz
+          if-no-files-found: error
