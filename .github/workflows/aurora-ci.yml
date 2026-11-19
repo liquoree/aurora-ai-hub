@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 60
     env:
       # latest is for the initial probe; pin a verified 5.2.1 image before making this check required
-      AURORA_IMAGE: hub.omp.ru/public/sdk-build-tools:latest
+      AURORA_IMAGE: hub.omp.ru/public/sdk-build-tools:5.2.1
 
     steps:
       - name: Checkout
@@ -56,22 +56,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-
-          for attempt in 1 2 3; do
-            echo "Docker pull attempt $attempt/3"
-
-            if timeout 5m docker pull hub.omp.ru/public/sdk-build-tools:latest; then
-              echo 'Aurora Build Tools image downloaded successfully.'
-              exit 0
-            fi
-
-            if [[ "$attempt" -lt 3 ]]; then
-              sleep 20
-            fi
-          done
-
-          echo 'Could not pull Aurora Build Tools after 3 attempts.' >&2
-          exit 1
+          docker pull "$AURORA_IMAGE"
 
       - name: Inspect apptool
         shell: bash
