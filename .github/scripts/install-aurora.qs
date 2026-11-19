@@ -34,3 +34,8 @@ Controller.prototype.LicenseAgreementPageCallback = function() {
 Controller.prototype.ReadyForInstallationPageCallback = function() {
     gui.clickButton(buttons.NextButton);
 };
+
+Controller.prototype.FinishedPageCallback = function() {
+    console.log("Finished page opened");
+    gui.clickButton(buttons.FinishButton);
+};
