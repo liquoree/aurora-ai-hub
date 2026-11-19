@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: ru.auroraaihub.aurora-ai-hub
+# Project: ru.auroraaihub.aurora_ai_hub
 # Configurations: Debug
 # =============================================================================
 
@@ -33,6 +33,18 @@ CONFIGURATION = Debug
 # Include rules file.
 
 include CMakeFiles/rules.ninja
+
+
+#############################################
+# Utility command for install/strip
+
+build CMakeFiles/install/strip.util: CUSTOM_COMMAND all
+  COMMAND = cd /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
+  DESC = Installing the project stripped...
+  pool = console
+  restat = 1
+
+build install/strip: phony CMakeFiles/install/strip.util
 
 
 #############################################
@@ -93,72 +105,60 @@ build edit_cache: phony CMakeFiles/edit_cache.util
 
 build distfiles: phony
 
-
-#############################################
-# Utility command for install/strip
-
-build CMakeFiles/install/strip.util: CUSTOM_COMMAND all
-  COMMAND = cd /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug && /usr/bin/cmake -DCMAKE_INSTALL_DO_STRIP=1 -P cmake_install.cmake
-  DESC = Installing the project stripped...
-  pool = console
-  restat = 1
-
-build install/strip: phony CMakeFiles/install/strip.util
-
 # =============================================================================
-# Object build statements for EXECUTABLE target ru.auroraaihub.aurora-ai-hub
+# Object build statements for EXECUTABLE target ru.auroraaihub.aurora_ai_hub
 
 
 #############################################
-# Order-only phony target for ru.auroraaihub.aurora-ai-hub
+# Order-only phony target for ru.auroraaihub.aurora_ai_hub
 
-build cmake_object_order_depends_target_ru.auroraaihub.aurora-ai-hub: phony || aurora-ai-hub-ru.qm aurora-ai-hub.qm ru.auroraaihub.aurora-ai-hub_autogen
+build cmake_object_order_depends_target_ru.auroraaihub.aurora_ai_hub: phony || aurora-ai-hub-ru.qm aurora-ai-hub.qm ru.auroraaihub.aurora_ai_hub_autogen
 
-build CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/ru.auroraaihub.aurora-ai-hub_autogen/mocs_compilation.cpp.o: CXX_COMPILER__ru.2eauroraaihub.2eaurora-ai-hub_Debug ru.auroraaihub.aurora-ai-hub_autogen/mocs_compilation.cpp || cmake_object_order_depends_target_ru.auroraaihub.aurora-ai-hub
+build CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/ru.auroraaihub.aurora_ai_hub_autogen/mocs_compilation.cpp.o: CXX_COMPILER__ru.2eauroraaihub.2eaurora_ai_hub_Debug ru.auroraaihub.aurora_ai_hub_autogen/mocs_compilation.cpp || cmake_object_order_depends_target_ru.auroraaihub.aurora_ai_hub
   DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_QML_DEBUG -DQT_QML_LIB -DQT_QUICK_LIB
-  DEP_FILE = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/ru.auroraaihub.aurora-ai-hub_autogen/mocs_compilation.cpp.o.d
+  DEP_FILE = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/ru.auroraaihub.aurora_ai_hub_autogen/mocs_compilation.cpp.o.d
   FLAGS = -g -pipe -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -specs=/usr/lib/rpm/aurora/pie-pic-cc1 -fstack-protector-strong --param=ssp-buffer-size=4 -fexceptions -O2 -Wall -Wformat -Wformat-security -m64 -mtune=generic -DQT_QML_DEBUG -g -fPIC
-  INCLUDES = -I. -I../../ -Iru.auroraaihub.aurora-ai-hub_autogen/include -I/usr/include/auroraapp -I/usr/include/appdir-cpp -I/usr/include/appdir -I/usr/include/appmanifest-glib -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/mdeclarativecache5 -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtQuick -isystem /usr/include/qt5/QtQml -isystem /usr/include/qt5/QtNetwork -isystem /usr/include/qt5/QtCore -isystem /usr/share/qt5/mkspecs/linux-g++ -isystem /usr/include/qt5/QtGui
-  OBJECT_DIR = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir
-  OBJECT_FILE_DIR = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/ru.auroraaihub.aurora-ai-hub_autogen
+  INCLUDES = -I. -I../../ -Iru.auroraaihub.aurora_ai_hub_autogen/include -I/usr/include/auroraapp -I/usr/include/appdir-cpp -I/usr/include/appdir -I/usr/include/appmanifest-glib -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/mdeclarativecache5 -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtQuick -isystem /usr/include/qt5/QtQml -isystem /usr/include/qt5/QtNetwork -isystem /usr/include/qt5/QtCore -isystem /usr/share/qt5/mkspecs/linux-g++ -isystem /usr/include/qt5/QtGui
+  OBJECT_DIR = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir
+  OBJECT_FILE_DIR = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/ru.auroraaihub.aurora_ai_hub_autogen
 
-build CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/src/main.cpp.o: CXX_COMPILER__ru.2eauroraaihub.2eaurora-ai-hub_Debug ../../src/main.cpp || cmake_object_order_depends_target_ru.auroraaihub.aurora-ai-hub
+build CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/src/main.cpp.o: CXX_COMPILER__ru.2eauroraaihub.2eaurora_ai_hub_Debug ../../src/main.cpp || cmake_object_order_depends_target_ru.auroraaihub.aurora_ai_hub
   DEFINES = -DQT_CORE_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_QML_DEBUG -DQT_QML_LIB -DQT_QUICK_LIB
-  DEP_FILE = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/src/main.cpp.o.d
+  DEP_FILE = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/src/main.cpp.o.d
   FLAGS = -g -pipe -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -specs=/usr/lib/rpm/aurora/pie-pic-cc1 -fstack-protector-strong --param=ssp-buffer-size=4 -fexceptions -O2 -Wall -Wformat -Wformat-security -m64 -mtune=generic -DQT_QML_DEBUG -g -fPIC
-  INCLUDES = -I. -I../../ -Iru.auroraaihub.aurora-ai-hub_autogen/include -I/usr/include/auroraapp -I/usr/include/appdir-cpp -I/usr/include/appdir -I/usr/include/appmanifest-glib -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/mdeclarativecache5 -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtQuick -isystem /usr/include/qt5/QtQml -isystem /usr/include/qt5/QtNetwork -isystem /usr/include/qt5/QtCore -isystem /usr/share/qt5/mkspecs/linux-g++ -isystem /usr/include/qt5/QtGui
-  OBJECT_DIR = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir
-  OBJECT_FILE_DIR = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/src
+  INCLUDES = -I. -I../../ -Iru.auroraaihub.aurora_ai_hub_autogen/include -I/usr/include/auroraapp -I/usr/include/appdir-cpp -I/usr/include/appdir -I/usr/include/appmanifest-glib -I/usr/include/glib-2.0 -I/usr/lib64/glib-2.0/include -I/usr/include/mdeclarativecache5 -isystem /usr/include/qt5 -isystem /usr/include/qt5/QtQuick -isystem /usr/include/qt5/QtQml -isystem /usr/include/qt5/QtNetwork -isystem /usr/include/qt5/QtCore -isystem /usr/share/qt5/mkspecs/linux-g++ -isystem /usr/include/qt5/QtGui
+  OBJECT_DIR = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir
+  OBJECT_FILE_DIR = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/src
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target ru.auroraaihub.aurora-ai-hub
+# Link build statements for EXECUTABLE target ru.auroraaihub.aurora_ai_hub
 
 
 #############################################
-# Link the executable ru.auroraaihub.aurora-ai-hub
+# Link the executable ru.auroraaihub.aurora_ai_hub
 
-build ru.auroraaihub.aurora-ai-hub: CXX_EXECUTABLE_LINKER__ru.2eauroraaihub.2eaurora-ai-hub_Debug CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/ru.auroraaihub.aurora-ai-hub_autogen/mocs_compilation.cpp.o CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir/src/main.cpp.o | /usr/lib64/libQt5Quick.so.5.6.3 /usr/lib64/libQt5Qml.so.5.6.3 /usr/lib/libQt5Network.so.5.6.3 /usr/lib/libQt5Gui.so.5.6.3 /usr/lib/libQt5Core.so.5.6.3 || ru.auroraaihub.aurora-ai-hub_autogen
+build ru.auroraaihub.aurora_ai_hub: CXX_EXECUTABLE_LINKER__ru.2eauroraaihub.2eaurora_ai_hub_Debug CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/ru.auroraaihub.aurora_ai_hub_autogen/mocs_compilation.cpp.o CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir/src/main.cpp.o | /usr/lib64/libQt5Quick.so.5.6.3 /usr/lib64/libQt5Qml.so.5.6.3 /usr/lib/libQt5Network.so.5.6.3 /usr/lib/libQt5Gui.so.5.6.3 /usr/lib/libQt5Core.so.5.6.3 || ru.auroraaihub.aurora_ai_hub_autogen
   FLAGS = -g -pipe -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -specs=/usr/lib/rpm/aurora/pie-pic-cc1 -fstack-protector-strong --param=ssp-buffer-size=4 -fexceptions -O2 -Wall -Wformat -Wformat-security -m64 -mtune=generic -DQT_QML_DEBUG -g
   LINK_FLAGS = -Wl,--as-needed -specs=/usr/lib/rpm/aurora/pie-pic-ld -Wl,-z,relro,-z,now
-  LINK_LIBRARIES = -Wl,-rpath,/usr/share/ru.auroraaihub.aurora-ai-hub/lib  /usr/lib64/libQt5Quick.so.5.6.3  -lauroraapp  -lappdir-cpp  -lappdir  -lappmanifest-glib  -lglib-2.0  -pie  -rdynamic  -lmdeclarativecache5  /usr/lib64/libQt5Qml.so.5.6.3  /usr/lib/libQt5Network.so.5.6.3  /usr/lib/libQt5Gui.so.5.6.3  /usr/lib/libQt5Core.so.5.6.3
-  OBJECT_DIR = CMakeFiles/ru.auroraaihub.aurora-ai-hub.dir
+  LINK_LIBRARIES = -Wl,-rpath,/usr/share/ru.auroraaihub.aurora_ai_hub/lib  /usr/lib64/libQt5Quick.so.5.6.3  -lauroraapp  -lappdir-cpp  -lappdir  -lappmanifest-glib  -lglib-2.0  -pie  -rdynamic  -lmdeclarativecache5  /usr/lib64/libQt5Qml.so.5.6.3  /usr/lib/libQt5Network.so.5.6.3  /usr/lib/libQt5Gui.so.5.6.3  /usr/lib/libQt5Core.so.5.6.3
+  OBJECT_DIR = CMakeFiles/ru.auroraaihub.aurora_ai_hub.dir
   POST_BUILD = :
   PRE_LINK = :
-  TARGET_FILE = ru.auroraaihub.aurora-ai-hub
-  TARGET_PDB = ru.auroraaihub.aurora-ai-hub.dbg
+  TARGET_FILE = ru.auroraaihub.aurora_ai_hub
+  TARGET_PDB = ru.auroraaihub.aurora_ai_hub.dbg
 
 
 #############################################
-# Utility command for ru.auroraaihub.aurora-ai-hub_autogen
+# Utility command for ru.auroraaihub.aurora_ai_hub_autogen
 
-build ru.auroraaihub.aurora-ai-hub_autogen: phony CMakeFiles/ru.auroraaihub.aurora-ai-hub_autogen ru.auroraaihub.aurora-ai-hub_autogen/mocs_compilation.cpp
+build ru.auroraaihub.aurora_ai_hub_autogen: phony CMakeFiles/ru.auroraaihub.aurora_ai_hub_autogen ru.auroraaihub.aurora_ai_hub_autogen/mocs_compilation.cpp
 
 
 #############################################
 # Custom command for aurora-ai-hub-ru.qm
 
-build aurora-ai-hub-ru.qm: CUSTOM_COMMAND ../../translations/aurora-ai-hub-ru.ts || ru.auroraaihub.aurora-ai-hub_autogen
+build aurora-ai-hub-ru.qm: CUSTOM_COMMAND ../../translations/aurora-ai-hub-ru.ts || ru.auroraaihub.aurora_ai_hub_autogen
   COMMAND = cd /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug && /usr/lib64/qt5/bin/lrelease /c/Users/liquoree/aurora-ai-hub/translations/aurora-ai-hub-ru.ts -qm /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/aurora-ai-hub-ru.qm
   DESC = Generating aurora-ai-hub-ru.qm
   restat = 1
@@ -167,18 +167,18 @@ build aurora-ai-hub-ru.qm: CUSTOM_COMMAND ../../translations/aurora-ai-hub-ru.ts
 #############################################
 # Custom command for aurora-ai-hub.qm
 
-build aurora-ai-hub.qm: CUSTOM_COMMAND ../../translations/aurora-ai-hub.ts || ru.auroraaihub.aurora-ai-hub_autogen
+build aurora-ai-hub.qm: CUSTOM_COMMAND ../../translations/aurora-ai-hub.ts || ru.auroraaihub.aurora_ai_hub_autogen
   COMMAND = cd /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug && /usr/lib64/qt5/bin/lrelease /c/Users/liquoree/aurora-ai-hub/translations/aurora-ai-hub.ts -qm /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/aurora-ai-hub.qm
   DESC = Generating aurora-ai-hub.qm
   restat = 1
 
 
 #############################################
-# Custom command for CMakeFiles/ru.auroraaihub.aurora-ai-hub_autogen
+# Custom command for CMakeFiles/ru.auroraaihub.aurora_ai_hub_autogen
 
-build CMakeFiles/ru.auroraaihub.aurora-ai-hub_autogen ru.auroraaihub.aurora-ai-hub_autogen/mocs_compilation.cpp: CUSTOM_COMMAND
-  COMMAND = cd /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug && /usr/bin/cmake -E cmake_autogen /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/ru.auroraaihub.aurora-ai-hub_autogen.dir/AutogenInfo.json Debug
-  DESC = Automatic MOC for target ru.auroraaihub.aurora-ai-hub
+build CMakeFiles/ru.auroraaihub.aurora_ai_hub_autogen ru.auroraaihub.aurora_ai_hub_autogen/mocs_compilation.cpp: CUSTOM_COMMAND
+  COMMAND = cd /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug && /usr/bin/cmake -E cmake_autogen /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/CMakeFiles/ru.auroraaihub.aurora_ai_hub_autogen.dir/AutogenInfo.json Debug
+  DESC = Automatic MOC for target ru.auroraaihub.aurora_ai_hub
   restat = 1
 
 # =============================================================================
@@ -192,7 +192,7 @@ build CMakeFiles/ru.auroraaihub.aurora-ai-hub_autogen ru.auroraaihub.aurora-ai-h
 #############################################
 # Folder: /c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug
 
-build all: phony ru.auroraaihub.aurora-ai-hub
+build all: phony ru.auroraaihub.aurora_ai_hub
 
 # =============================================================================
 # Built-in targets

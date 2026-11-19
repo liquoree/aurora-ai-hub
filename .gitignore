@@ -2,6 +2,8 @@ build/
 build-*/
 cmake-build-/
 cmake-build-*/
+*.user
+*.user.*
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
@@ -15,3 +17,8 @@ cmake_install.cmake
 
 *.gguf
 *.ggml
+
+/architecture-backup/
+/migration-backup-*/
+
+.env

@@ -1,2 +1,2 @@
 /usr
-C:/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/ru.auroraaihub.aurora-ai-hub:bin
+C:/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/ru.auroraaihub.aurora_ai_hub:bin

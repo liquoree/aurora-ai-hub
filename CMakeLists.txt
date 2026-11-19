@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(ru.auroraaihub.aurora-ai-hub CXX)
+project(ru.auroraaihub.aurora_ai_hub CXX)
 
 find_package (Qt5 COMPONENTS Core Network Qml Gui Quick LinguistTools REQUIRED)
 
@@ -50,6 +50,12 @@ install(TARGETS ${PROJECT_NAME}
 )
 install(DIRECTORY qml
     DESTINATION share/${PROJECT_NAME}
+    FILES_MATCHING
+    PATTERN "*.qml"
+    PATTERN "*.js"
+    PATTERN "*.png"
+    PATTERN "*.svg"
+    PATTERN "qmldir"
 )
 
 foreach(_file IN LISTS QmFiles)

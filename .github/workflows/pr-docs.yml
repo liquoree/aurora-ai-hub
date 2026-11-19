@@ -1,0 +1,40 @@
+name: PR documentation check
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require status update or explicit exemption
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: |
+          python3 - <<'PY'
+          import os
+          import subprocess
+          import sys
+
+          changed = subprocess.check_output(
+              ['git', 'diff', '--name-only', os.environ['BASE_SHA'], os.environ['HEAD_SHA']],
+              text=True
+          ).splitlines()
+          relevant = any(path.startswith(('src/', 'core/', 'qml/', 'integrations/', 'examples/'))
+                         or path in ('CMakeLists.txt',) for path in changed)
+          status_updated = 'docs/STATUS.md' in changed
+          body = os.environ.get('PR_BODY', '')
+          exemption = 'Документация статуса: не требуется' in body
+          if relevant and not (status_updated or exemption):
+              print('Update docs/STATUS.md or explain in PR: Документация статуса: не требуется')
+              sys.exit(1)
+          print('Documentation check passed')
+          PY
