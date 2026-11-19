@@ -22,7 +22,6 @@ jobs:
       SDK_URL: https://sdk-repo.omprussia.ru/sdk/installers/5.2.1/5.2.1.200-release/AuroraSDK-BT/AuroraSDK-5.2.1.200-BT-release-linux-64-online-26.07.01-18.17.50.run
       SDK_DIR: ${{ github.workspace }}/.aurora-sdk
       QT_QPA_PLATFORM: xcb
-      # fill with exact x86_64 target name after first SDK installation
       AURORA_TARGET: ''
 
     steps:
@@ -70,6 +69,16 @@ jobs:
             libx11-xcb1 \
             xvfb
 
+      - name: Check installer shared libraries
+        shell: bash
+        run: |
+          set -euo pipefail
+          ldd "$RUNNER_TEMP/aurora-sdk.run" | tee "$RUNNER_TEMP/installer-libs.txt"
+          if grep -q 'not found' "$RUNNER_TEMP/installer-libs.txt"; then
+            echo 'Some installer libraries are missing.' >&2
+            exit 1
+          fi
+
       - name: Inspect installer CLI
         shell: bash
         run: |
@@ -78,12 +87,28 @@ jobs:
           head -n 100 "$RUNNER_TEMP/installer-help.txt"
           grep -q -- '--script' "$RUNNER_TEMP/installer-help.txt"
 
+      - name: Diagnose Docker for Aurora SDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Docker executable:'
+          command -v docker
+          echo 'Docker version:'
+          docker version
+          echo 'Docker daemon:'
+          docker info
+          echo 'Docker socket:'
+          ls -l /var/run/docker.sock
+          echo 'Current user:'
+          id
+          echo 'Docker access:'
+          docker ps
+
       - name: Install Aurora SDK headlessly
         shell: bash
         run: |
           set -euo pipefail
           mkdir -p "$SDK_DIR"
-
           timeout 25m xvfb-run -a "$RUNNER_TEMP/aurora-sdk.run" \
             --verbose \
             --script "$GITHUB_WORKSPACE/.github/scripts/install-aurora.qs" \
@@ -91,6 +116,13 @@ jobs:
 
           echo 'Installed SDK entries:'
           find "$SDK_DIR" -maxdepth 5 -type f -name sfdk -print
+          echo 'SDK directory contents:'
+          ls -la "$SDK_DIR"
+
+          if ! find "$SDK_DIR" -type f -name sfdk -print -quit | grep -q .; then
+            echo 'Aurora SDK installation did not provide sfdk.' >&2
+            exit 1
+          fi
 
       - name: Locate SDK and inspect targets
         id: sdk
