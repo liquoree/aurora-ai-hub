@@ -1,0 +1,92 @@
+name: Aurora CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: aurora-ci-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  aurora-build:
+    name: Aurora BT x86_64 RPM build
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    env:
+      # latest is for the initial probe; pin a verified 5.2.1 image before making this check required
+      AURORA_IMAGE: hub.omp.ru/public/sdk-build-tools:5.2.1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check project and Docker
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f CMakeLists.txt
+          find rpm -maxdepth 1 -type f -name '*.spec' -print -quit | grep -q .
+          docker info --format 'Docker server: {{.ServerVersion}}'
+          df -h .
+
+      - name: Check Aurora registry connectivity
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          echo 'Checking registry endpoint:'
+          curl -sS -L --connect-timeout 10 --max-time 30 \
+            -o /dev/null \
+            -w 'Registry HTTP: %{http_code}, total: %{time_total}s\n' \
+            https://hub.omp.ru/v2/ || true
+
+          echo 'Checking token service:'
+          curl -sS --connect-timeout 10 --max-time 30 \
+            -o /dev/null \
+            -w 'Token HTTP: %{http_code}, total: %{time_total}s\n' \
+            'https://hub.omp.ru/service/token?scope=repository%3Apublic%2Fsdk-build-tools%3Apull&service=harbor-registry' || true
+
+      - name: Pull Aurora Build Tools image
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker pull "$AURORA_IMAGE"
+
+      - name: Inspect apptool
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm "$AURORA_IMAGE" apptool -h
+
+      - name: Build x86_64 RPM
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -u "$(id -u):$(id -g)" \
+            -e HOME=/tmp \
+            -v "$GITHUB_WORKSPACE":/sources \
+            -w /sources \
+            "$AURORA_IMAGE" \
+            apptool build --x64
+
+      - name: Verify RPM output
+        shell: bash
+        run: |
+          set -euo pipefail
+          find RPMS -type f -name '*.rpm' -print
+          test -n "$(find RPMS -type f -name '*.rpm' -print -quit)"
+
+      - name: Upload RPM artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: aurora-x86_64-rpm
+          path: RPMS/**/*.rpm
+          if-no-files-found: error
