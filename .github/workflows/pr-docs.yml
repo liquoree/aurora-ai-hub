@@ -2,7 +2,7 @@ name: PR documentation check
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    branches: [main]
 
 jobs:
   check-status:
@@ -10,7 +10,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4.3.1
         with:
           fetch-depth: 0
       - name: Require status update or explicit exemption
