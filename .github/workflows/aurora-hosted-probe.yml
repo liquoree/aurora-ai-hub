@@ -1,0 +1,56 @@
+name: Aurora hosted runner probe
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  environment-probe:
+    name: Aurora hosted environment probe
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Inspect runner resources
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'Operating system:'
+          cat /etc/os-release
+          echo 'CPU and memory:'
+          nproc
+          free -h
+          echo 'Disk:'
+          df -h / /mnt
+          echo 'Docker:'
+          docker --version
+          docker info --format '{{.ServerVersion}}'
+          echo 'KVM availability:'
+          if [[ -e /dev/kvm ]]; then ls -l /dev/kvm; else echo '/dev/kvm is unavailable'; fi
+
+      - name: Check Aurora SDK installation prerequisites
+        shell: bash
+        run: |
+          set -euo pipefail
+          available_kb=$(df -Pk "$RUNNER_TEMP" | awk 'NR==2 {print $4}')
+          required_kb=$((45 * 1024 * 1024))
+          echo "Available disk: $((available_kb / 1024 / 1024)) GiB"
+          echo 'Aurora SDK documented minimum free disk: 45 GiB'
+          if (( available_kb < required_kb )); then
+            echo '::warning::Insufficient free space for a supported Aurora SDK installation.'
+            echo 'This is a diagnostic workflow, not an Aurora application build.'
+          fi
+
+      - name: Verify CMake project metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f CMakeLists.txt
+          test -f src/main.cpp
+          test -f rpm/ru.auroraaihub.aurora_ai_hub.spec
+          test -f ru.auroraaihub.aurora_ai_hub.desktop
+          echo 'Project entry points exist. No Aurora compilation was performed.'

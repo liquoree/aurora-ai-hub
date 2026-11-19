@@ -1,4 +1,4 @@
-Name:       ru.auroraaihub.aurora-ai-hub
+Name:       ru.auroraaihub.aurora_ai_hub
 Summary:    Локальная платформа для работы с ИИ-моделями
 Version:    0.1
 Release:    1

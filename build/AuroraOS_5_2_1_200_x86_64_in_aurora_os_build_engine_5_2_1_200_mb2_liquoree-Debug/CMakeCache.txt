@@ -136,7 +136,7 @@ CMAKE_PROJECT_DESCRIPTION:STATIC=
 CMAKE_PROJECT_HOMEPAGE_URL:STATIC=
 
 //Value Computed by CMake
-CMAKE_PROJECT_NAME:STATIC=ru.auroraaihub.aurora-ai-hub
+CMAKE_PROJECT_NAME:STATIC=ru.auroraaihub.aurora_ai_hub
 
 //Path to a program.
 CMAKE_RANLIB:FILEPATH=/usr/bin/ranlib
@@ -262,6 +262,12 @@ ru.auroraaihub.aurora-ai-hub_BINARY_DIR:STATIC=/c/Users/liquoree/aurora-ai-hub/b
 
 //Value Computed by CMake
 ru.auroraaihub.aurora-ai-hub_SOURCE_DIR:STATIC=/c/Users/liquoree/aurora-ai-hub
+
+//Value Computed by CMake
+ru.auroraaihub.aurora_ai_hub_BINARY_DIR:STATIC=/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug
+
+//Value Computed by CMake
+ru.auroraaihub.aurora_ai_hub_SOURCE_DIR:STATIC=/c/Users/liquoree/aurora-ai-hub
 
 
 ########################

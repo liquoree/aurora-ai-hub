@@ -43,45 +43,45 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/ru.auroraaihub.aurora-ai-hub")
-  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ru.auroraaihub.aurora-ai-hub" AND
-     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ru.auroraaihub.aurora-ai-hub")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/bin" TYPE EXECUTABLE FILES "/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/ru.auroraaihub.aurora_ai_hub")
+  if(EXISTS "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ru.auroraaihub.aurora_ai_hub" AND
+     NOT IS_SYMLINK "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ru.auroraaihub.aurora_ai_hub")
     if(CMAKE_INSTALL_DO_STRIP)
-      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ru.auroraaihub.aurora-ai-hub")
+      execute_process(COMMAND "/usr/bin/strip" "$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/bin/ru.auroraaihub.aurora_ai_hub")
     endif()
   endif()
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ru.auroraaihub.aurora-ai-hub" TYPE DIRECTORY FILES "/c/Users/liquoree/aurora-ai-hub/qml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ru.auroraaihub.aurora_ai_hub" TYPE DIRECTORY FILES "/c/Users/liquoree/aurora-ai-hub/qml" FILES_MATCHING REGEX "/[^/]*\\.qml$" REGEX "/[^/]*\\.js$" REGEX "/[^/]*\\.png$" REGEX "/[^/]*\\.svg$" REGEX "/qmldir$")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ru.auroraaihub.aurora-ai-hub/translations" TYPE FILE RENAME "ru.auroraaihub.aurora-ai-hub-ru.qm" FILES "/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/aurora-ai-hub-ru.qm")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ru.auroraaihub.aurora_ai_hub/translations" TYPE FILE RENAME "ru.auroraaihub.aurora_ai_hub-ru.qm" FILES "/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/aurora-ai-hub-ru.qm")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ru.auroraaihub.aurora-ai-hub/translations" TYPE FILE RENAME "ru.auroraaihub.aurora-ai-hub.qm" FILES "/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/aurora-ai-hub.qm")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/ru.auroraaihub.aurora_ai_hub/translations" TYPE FILE RENAME "ru.auroraaihub.aurora_ai_hub.qm" FILES "/c/Users/liquoree/aurora-ai-hub/build/AuroraOS_5_2_1_200_x86_64_in_aurora_os_build_engine_5_2_1_200_mb2_liquoree-Debug/aurora-ai-hub.qm")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/86x86/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/86x86/ru.auroraaihub.aurora-ai-hub.png")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/86x86/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/86x86/ru.auroraaihub.aurora_ai_hub.png")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/108x108/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/108x108/ru.auroraaihub.aurora-ai-hub.png")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/108x108/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/108x108/ru.auroraaihub.aurora_ai_hub.png")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/128x128/ru.auroraaihub.aurora-ai-hub.png")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128x128/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/128x128/ru.auroraaihub.aurora_ai_hub.png")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/172x172/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/172x172/ru.auroraaihub.aurora-ai-hub.png")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/172x172/apps" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/icons/172x172/ru.auroraaihub.aurora_ai_hub.png")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/ru.auroraaihub.aurora-ai-hub.desktop")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/applications" TYPE FILE FILES "/c/Users/liquoree/aurora-ai-hub/ru.auroraaihub.aurora_ai_hub.desktop")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT)
