@@ -14,12 +14,13 @@ test "$(git rev-parse HEAD)" = b1b770d90d94cad9e9ea5b993bdbc383a522fb28
 
 ## Сборка для Aurora OS 5.2.1.200 x86_64
 
-В Build Engine MB2 найдите цель 5.2.1.200 x86_64 командой `sdk-manage target list`, войдите в неё через `sb2 -t ИМЯ_ЦЕЛИ` и перейдите в каталог исходников. Ниже приведена конфигурация для проверки в MB2.
+В Build Engine MB2 выполните `sdk-manage target list`, войдите в цель через `sb2 -t AuroraOS-5.2.1.200-x86_64` и перейдите в каталог исходников внутри домашнего каталога сборочного пользователя. Сборка CPU-бинарника в этой цели подтверждена в GitHub Actions. [Журнал и артефакт MB2](https://github.com/liquoree/aurora-ai-hub/actions/runs/45276148492).
 
 ```sh
-cmake -S . -B build-aurora -G Ninja \
+cmake -S . -B build-aurora \
   -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
   -DGGML_NATIVE=OFF -DGGML_AVX=OFF -DGGML_AVX2=OFF \
+  -DGGML_BMI2=OFF -DGGML_SSE42=OFF \
   -DGGML_FMA=OFF -DGGML_F16C=OFF -DGGML_OPENMP=OFF \
   -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF \
   -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF \

@@ -36,7 +36,7 @@
 ### №2 — Сеня: llama.cpp, RuntimeManager
 
 - [x] Собран CPU-бинарник `llama-server` v1.0.0 в Aurora SDK **BT** 5.2.1.200. Проверены линковка и формат ELF64 x86-64. [Ревизия и параметры сборки](../core/runtime/README.md).
-- [ ] Повторить сборку в Aurora SDK **MB2** 5.2.1.200 для x86_64 (Issue #9).
+- [x] Собран CPU-бинарник `llama-server` v1.0.0 в Aurora SDK **MB2** 5.2.1.200 для x86_64. Проверены линковка и формат ELF64 x86-64. [Сборка и артефакт](https://github.com/liquoree/aurora-ai-hub/actions/runs/45276148492).
 - [x] В эмуляторе Aurora OS 5.2.1.200 **ARM64** `llama-server` загрузил `stories260K.gguf` и выдал 12 токенов по локальному HTTP.
 - [ ] Повторить запуск и генерацию в целевом эмуляторе **x86_64** (Issue #9).
 - [ ] `RuntimeManager`: запуск и остановка процесса.
