@@ -44,33 +44,33 @@ jobs:
           ssh-keygen -q -t ed25519 -N '' -f "$lab/key"
           cp "$lab/key.pub" "$lab/ssh/defaultuser/authorized_keys"
 
+          emulator_dir="$(dirname "$disk")/DefaultEmulator"
+          find "$emulator_dir" -maxdepth 3 -printf '%P\n'
+          if [ -d "$emulator_dir/vmshare" ]; then cp -R "$emulator_dir/vmshare/." "$lab/configs/"; fi
           qemu_img="$(dirname "$qemu")/qemu-img"
           "$qemu_img" convert -O raw "$disk" "$lab/disk.raw"
           fdisk -l "$lab/disk.raw" | tee "$lab/partitions.log"
-          rm "$lab/disk.raw"
-          firmware=()
-          if grep -q 'EFI System' "$lab/partitions.log"; then
-            ovmf=$(find "$RUNNER_TEMP/aurora" -iname '*x86_64*code*.fd' -print -quit)
-            if [ -z "$ovmf" ]; then
-              sudo apt-get update -qq
-              sudo apt-get install -y ovmf
-              ovmf=/usr/share/OVMF/OVMF_CODE_4M.fd
-            fi
-            test -r "$ovmf"
-            firmware=(-bios "$ovmf")
+          mkdir "$lab/rootfs"
+          if sudo mount -o loop,ro,offset=512 "$lab/disk.raw" "$lab/rootfs"; then
+            sudo find "$lab/rootfs" -maxdepth 5 \
+              \( -iname '*sshd*' -o -iname '*.network' -o -name 'grub.cfg' \) \
+              -printf '%P\n' | tee "$lab/guest-config.log"
+            sudo umount "$lab/rootfs"
           fi
+          rm "$lab/disk.raw"
           if test -c /dev/kvm && ! test -w /dev/kvm; then
             sudo chgrp "$(id -gn)" /dev/kvm
             sudo chmod g+rw /dev/kvm
           fi
           accelerator=(-accel tcg,thread=multi -cpu max)
           if test -w /dev/kvm; then accelerator=(-accel kvm -cpu host); fi
-          "$qemu" "${accelerator[@]}" "${firmware[@]}" -m 3072 -smp 2 -display none -no-reboot -snapshot \
+          "$qemu" "${accelerator[@]}" -m 3072 -smp 2 -display none -no-reboot -snapshot \
+            -vga none -device virtio-gpu,xres=360,yres=800 \
             -drive "file=$disk,if=virtio,format=qcow2" \
-            -nic user,model=e1000,hostfwd=tcp:127.0.0.1:2223-:22 \
-            -virtfs "local,path=$lab/ssh,mount_tag=ssh,security_model=none,readonly=on" \
-            -virtfs "local,path=$lab/configs,mount_tag=configs,security_model=none,readonly=on" \
-            -virtfs "local,path=$lab/media,mount_tag=media,security_model=none,readonly=on" \
+            -nic user,model=virtio-net-pci,mac=52:54:00:12:34:56,hostfwd=tcp:127.0.0.1:2223-:22 \
+            -virtfs "local,path=$lab/ssh,mount_tag=ssh,security_model=mapped,readonly=on" \
+            -virtfs "local,path=$lab/configs,mount_tag=configs,security_model=mapped,readonly=on" \
+            -virtfs "local,path=$lab/media,mount_tag=media,security_model=mapped,readonly=on" \
             -monitor "unix:$lab/monitor.sock,server=on,wait=off" \
             -serial "file:$lab/console.log" > "$lab/qemu.log" 2>&1 &
           qemu_pid=$!
