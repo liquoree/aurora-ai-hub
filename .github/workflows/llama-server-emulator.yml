@@ -35,25 +35,37 @@ jobs:
       - name: Generate text inside the emulator
         run: |
           set -euo pipefail
-          adt=$(find "$RUNNER_TEMP/aurora" -name adt -executable -print -quit)
-          test -n "$adt"
-          emulator="$RUNNER_TEMP/aurora/emulators/5.2.1.200"
-          test -f "$emulator/Aurora_OS-5.2.1.200-Emulator_x86_64.qcow2"
-          "$adt" emulator add issue-9 "$emulator"
-          "$adt" device select issue-9
-          if ! test -w /dev/kvm; then
-            "$adt" emulator config set acceleration off
-          fi
-          trap '"$adt" emulator stop' EXIT
-          "$adt" emulator start --headless
+          disk="$RUNNER_TEMP/aurora/emulators/5.2.1.200/Aurora_OS-5.2.1.200-Emulator_x86_64.qcow2"
+          qemu=$(find "$RUNNER_TEMP/aurora" -name qemu-system-x86_64 -executable -print -quit)
+          test -f "$disk"
+          test -n "$qemu"
+          lab="$RUNNER_TEMP/llama-emulator"
+          mkdir -p "$lab"/{ssh/defaultuser,configs,media}
+          ssh-keygen -q -t ed25519 -N '' -f "$lab/key"
+          cp "$lab/key.pub" "$lab/ssh/defaultuser/authorized_keys"
+
+          accelerator=(-accel tcg,thread=multi -cpu max)
+          if test -w /dev/kvm; then accelerator=(-accel kvm -cpu host); fi
+          "$qemu" "${accelerator[@]}" -m 3072 -smp 2 -display none -no-reboot -snapshot \
+            -drive "file=$disk,if=virtio,format=qcow2" \
+            -nic user,model=virtio-net-pci,hostfwd=tcp:127.0.0.1:2223-:22 \
+            -virtfs "local,path=$lab/ssh,mount_tag=ssh,security_model=none,readonly=on" \
+            -virtfs "local,path=$lab/configs,mount_tag=configs,security_model=none,readonly=on" \
+            -virtfs "local,path=$lab/media,mount_tag=media,security_model=none,readonly=on" \
+            -serial "file:$lab/console.log" > "$lab/qemu.log" 2>&1 &
+          qemu_pid=$!
+          trap 'kill "$qemu_pid" 2>/dev/null || true' EXIT
+          connection=(-o BatchMode=yes -o ConnectTimeout=4 -o StrictHostKeyChecking=accept-new
+            -o "UserKnownHostsFile=$lab/known_hosts" -i "$lab/key")
+          guest=defaultuser@127.0.0.1
           for attempt in {1..60}; do
-            if timeout 8 "$adt" device exec -- true; then break; fi
+            if ssh "${connection[@]}" -p 2223 "$guest" true 2>/dev/null; then break; fi
+            kill -0 "$qemu_pid" || { cat "$lab/qemu.log" >&2; exit 1; }
             sleep 3
           done
-          "$adt" device exec -- uname -m | grep -x x86_64
-          "$adt" device exec -- grep '^VERSION_ID=5.2.1.200$' /etc/os-release
-          "$adt" device cp llama-server issue-9:llama-server
-          "$adt" device cp stories260K.gguf issue-9:stories260K.gguf
+          ssh "${connection[@]}" -p 2223 "$guest" uname -m | grep -x x86_64
+          ssh "${connection[@]}" -p 2223 "$guest" cat /etc/os-release | grep '^VERSION_ID=5.2.1.200$'
+          scp -O "${connection[@]}" -P 2223 llama-server stories260K.gguf "$guest:"
           cat > llama-smoke.sh <<'SMOKE'
           set -euo pipefail
           cd "$HOME"
@@ -69,7 +81,6 @@ jobs:
             -d '{"prompt":"Once upon a time","n_predict":12,"temperature":0,"seed":42}' \
             http://127.0.0.1:19090/completion > completion.json
           SMOKE
-          "$adt" device cp llama-smoke.sh issue-9:llama-smoke.sh
-          timeout 150 "$adt" device exec -- bash ./llama-smoke.sh
-          "$adt" device cp issue-9:completion.json completion.json
+          timeout 150 ssh "${connection[@]}" -p 2223 "$guest" 'bash -s' < llama-smoke.sh
+          scp -O "${connection[@]}" -P 2223 "$guest:completion.json" completion.json
           jq -er '.content | select(type == "string" and test("\\S"))' completion.json
