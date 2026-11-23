@@ -58,10 +58,12 @@ jobs:
           runuser -u mersdk -- sdk-manage --mode installer tooling install AuroraOS-5.2.1.200 /archives/tooling.tar
           runuser -u mersdk -- sdk-manage --mode installer target install AuroraOS-5.2.1.200-x86_64 /archives/target.tar --tooling AuroraOS-5.2.1.200
           runuser -u mersdk -- sdk-manage target list
-          install -d -o mersdk -g "$(id -gn mersdk)" /home/mersdk/build-mb2
+          install -d -o mersdk -g "$(id -gn mersdk)" /home/mersdk/build-mb2 /home/mersdk/llama.cpp
+          cp -a /work/. /home/mersdk/llama.cpp/
+          chown -R mersdk:"$(id -gn mersdk)" /home/mersdk/llama.cpp
           runuser -u mersdk -- sb2 -t AuroraOS-5.2.1.200-x86_64 -R bash -ec '
             eval "$(rpm --eval "%set_build_flags")"
-            cmake -S /work -B /home/mersdk/build-mb2 \
+            cmake -S /home/mersdk/llama.cpp -B /home/mersdk/build-mb2 \
               -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
               -DGGML_NATIVE=OFF -DGGML_AVX=OFF -DGGML_AVX2=OFF \
               -DGGML_BMI2=OFF -DGGML_SSE42=OFF \
