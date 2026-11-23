@@ -35,10 +35,9 @@ jobs:
           }
 
           download org.merproject.mersdkdocker/2022.12.12-1buildengine-docker.7z engine.7z
-          7z x -so -r engine.7z '*.tar' | docker load | tee engine-image.log
+          image=aurora-mb2-engine:5.2.1.200
+          7z x -so -r engine.7z '*.tar' | docker import --platform linux/amd64 - "$image"
           rm engine.7z
-          image=$(sed -n 's/^Loaded image: //p' engine-image.log)
-          test -n "$image"
           docker image inspect "$image" --format '{{.Os}}/{{.Architecture}}' | grep -x linux/amd64
           printf 'MB2_IMAGE=%s\n' "$image" >> "$GITHUB_ENV"
 

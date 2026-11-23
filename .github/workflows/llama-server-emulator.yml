@@ -37,8 +37,8 @@ jobs:
           set -euo pipefail
           adt=$(find "$RUNNER_TEMP/aurora" -name adt -executable -print -quit)
           test -n "$adt"
-          emulator="$RUNNER_TEMP/aurora/emulators/5.2.1.200/DefaultEmulator"
-          test -f "$emulator/image.qcow2"
+          emulator="$RUNNER_TEMP/aurora/emulators/5.2.1.200"
+          test -f "$emulator/Aurora_OS-5.2.1.200-Emulator_x86_64.qcow2"
           "$adt" emulator add issue-9 "$emulator"
           "$adt" device select issue-9
           if ! test -w /dev/kvm; then
