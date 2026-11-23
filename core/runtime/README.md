@@ -30,3 +30,26 @@ readelf -h build-aurora/bin/llama-server
 ```
 
 Ожидаемый артефакт — исполняемый ELF64 для x86-64. Для проверки кросс-сборки в контейнере `aurora-build-tools:5.2.1.200` к команде конфигурации добавляется `-DCMAKE_TOOLCHAIN_FILE=/usr/share/cmake/toolchain/x86_64-meego-linux-gnu-g++.cmake`. Для каждого комплекта используйте отдельный каталог сборки.
+
+## Проверка генерации в эмуляторе
+
+Использована модель [stories260K.gguf](https://huggingface.co/ggml-org/tiny-llamas/blob/def3e2dd70df35ecbf6403ea347de4c5977220c1/stories260K.gguf) с SHA-256 `047bf46455a544931cff6fef14d7910154c56afbc23ab1c5e56a72e69912c04b`. Скопируйте модель и бинарник соответствующей архитектуры в один каталог эмулятора.
+
+В эмуляторе запустите сервер:
+
+```sh
+./llama-server -m stories260K.gguf -c 256 -t 2 -ngl 0 --host 127.0.0.1 --port 19090
+```
+
+В другой сессии эмулятора выполните запросы:
+
+```sh
+curl -fsS http://127.0.0.1:19090/health
+curl -fsS -H 'Content-Type: application/json' \
+  -d '{"prompt":"Once upon a time","n_predict":12,"temperature":0,"seed":42}' \
+  http://127.0.0.1:19090/completion
+```
+
+На Aurora OS 5.2.1.200 ARM64 оба запроса вернули HTTP 200. Ответ проверки готовности — `{"status":"ok"}`. Ответ модели — `, there was a little girl named Lily. She` (`tokens_predicted: 12`).
+
+ARM64-бинарник собран в Aurora BT 5.2.1.200 с `-DCMAKE_TOOLCHAIN_FILE=/usr/share/cmake/toolchain/aarch64-meego-linux-gnu-g++.cmake`, `-DCMAKE_AR=/usr/bin/ar` и `-DCMAKE_RANLIB=/usr/bin/ranlib`. Флаги AVX, AVX2, FMA и F16C относятся к x86_64.

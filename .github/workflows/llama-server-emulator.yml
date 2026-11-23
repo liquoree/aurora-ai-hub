@@ -1,0 +1,78 @@
+name: llama-server on Aurora OS x86_64
+
+on:
+  push:
+    branches: [feature/9-llama-cpp-aurora-feasibility]
+    paths: [.github/workflows/llama-server-emulator.yml]
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  inference:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Download verified SDK BT build
+        uses: actions/download-artifact@v4
+        with:
+          name: llama-server-aurora-bt-x86_64
+          run-id: 44597230350
+          github-token: ${{ github.token }}
+
+      - name: Prepare Aurora OS 5.2.1.200 emulator and model
+        run: |
+          set -euo pipefail
+          tar -xzf llama-server-aurora-x86_64.tar.gz
+          curl -fLsS --retry 3 https://huggingface.co/ggml-org/tiny-llamas/resolve/def3e2dd70df35ecbf6403ea347de4c5977220c1/stories260K.gguf -o stories260K.gguf
+          echo '047bf46455a544931cff6fef14d7910154c56afbc23ab1c5e56a72e69912c04b  stories260K.gguf' | sha256sum -c -
+          curl -fLsS --retry 3 https://sdk-repo.omprussia.ru/sdk/installers/5.2.1/5.2.1.200-release/AuroraEmulator/standalone-emulator-5.2.1.200-linux-x86_64.7z -o emulator.7z
+          echo '33c55d3d40488b246f9ac07a184548ad  emulator.7z' | md5sum -c -
+          7z x -bd -o"$RUNNER_TEMP/aurora" emulator.7z
+          find "$RUNNER_TEMP/aurora" -name adt -o -name emulator-setup.ini -o -name '*.qcow2'
+
+      - name: Generate text inside the emulator
+        run: |
+          set -euo pipefail
+          adt=$(find "$RUNNER_TEMP/aurora" -name adt -executable -print -quit)
+          test -n "$adt"
+          "$adt" device list --emulators-only
+          if ! "$adt" emulator config get ssh_port; then
+            config=$(find "$RUNNER_TEMP/aurora" -name emulator-setup.ini -print -quit)
+            test -n "$config"
+            "$adt" emulator add issue-9 "$(dirname "$config")"
+            "$adt" device select issue-9
+          fi
+          if ! test -w /dev/kvm; then
+            "$adt" emulator config set acceleration off
+          fi
+          trap '"$adt" emulator stop' EXIT
+          "$adt" emulator start --headless
+          for attempt in {1..60}; do
+            if timeout 8 "$adt" device exec -- true; then break; fi
+            sleep 3
+          done
+          "$adt" device exec -- uname -m | grep -x x86_64
+          "$adt" device exec -- grep '^VERSION_ID=5.2.1.200$' /etc/os-release
+          "$adt" device cp llama-server 0:llama-server
+          "$adt" device cp stories260K.gguf 0:stories260K.gguf
+          cat > llama-smoke.sh <<'SMOKE'
+          set -euo pipefail
+          cd "$HOME"
+          chmod +x ./llama-server
+          ./llama-server -m stories260K.gguf -c 256 -t 2 -ngl 0 --host 127.0.0.1 --port 19090 > server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          until curl -fsS --max-time 2 http://127.0.0.1:19090/health; do
+            kill -0 "$server_pid" || { cat server.log >&2; exit 1; }
+            sleep 1
+          done
+          curl -fsS --max-time 90 -H 'Content-Type: application/json' \
+            -d '{"prompt":"Once upon a time","n_predict":12,"temperature":0,"seed":42}' \
+            http://127.0.0.1:19090/completion > completion.json
+          SMOKE
+          "$adt" device cp llama-smoke.sh 0:llama-smoke.sh
+          timeout 150 "$adt" device exec -- bash ./llama-smoke.sh
+          "$adt" device cp 0:completion.json completion.json
+          jq -er '.content | select(type == "string" and test("\\S"))' completion.json
