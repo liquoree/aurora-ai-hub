@@ -37,13 +37,10 @@ jobs:
           set -euo pipefail
           adt=$(find "$RUNNER_TEMP/aurora" -name adt -executable -print -quit)
           test -n "$adt"
-          "$adt" device list --emulators-only
-          if ! "$adt" emulator config get ssh_port; then
-            config=$(find "$RUNNER_TEMP/aurora" -name emulator-setup.ini -print -quit)
-            test -n "$config"
-            "$adt" emulator add issue-9 "$(dirname "$config")"
-            "$adt" device select issue-9
-          fi
+          emulator="$RUNNER_TEMP/aurora/emulators/5.2.1.200/DefaultEmulator"
+          test -f "$emulator/image.qcow2"
+          "$adt" emulator add issue-9 "$emulator"
+          "$adt" device select issue-9
           if ! test -w /dev/kvm; then
             "$adt" emulator config set acceleration off
           fi
@@ -55,8 +52,8 @@ jobs:
           done
           "$adt" device exec -- uname -m | grep -x x86_64
           "$adt" device exec -- grep '^VERSION_ID=5.2.1.200$' /etc/os-release
-          "$adt" device cp llama-server 0:llama-server
-          "$adt" device cp stories260K.gguf 0:stories260K.gguf
+          "$adt" device cp llama-server issue-9:llama-server
+          "$adt" device cp stories260K.gguf issue-9:stories260K.gguf
           cat > llama-smoke.sh <<'SMOKE'
           set -euo pipefail
           cd "$HOME"
@@ -72,7 +69,7 @@ jobs:
             -d '{"prompt":"Once upon a time","n_predict":12,"temperature":0,"seed":42}' \
             http://127.0.0.1:19090/completion > completion.json
           SMOKE
-          "$adt" device cp llama-smoke.sh 0:llama-smoke.sh
+          "$adt" device cp llama-smoke.sh issue-9:llama-smoke.sh
           timeout 150 "$adt" device exec -- bash ./llama-smoke.sh
-          "$adt" device cp 0:completion.json completion.json
+          "$adt" device cp issue-9:completion.json completion.json
           jq -er '.content | select(type == "string" and test("\\S"))' completion.json
