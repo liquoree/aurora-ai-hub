@@ -54,12 +54,13 @@ jobs:
           docker run --rm -i --privileged --entrypoint /bin/bash \
             -v "$RUNNER_TEMP/mb2:/host_targets:ro" \
             -v "$GITHUB_WORKSPACE:/work" "$MB2_IMAGE" -e -s <<'ENGINE'
-          sdk-manage --mode installer tooling install AuroraOS-5.2.1.200 /host_targets/tooling.tar
-          sdk-manage --mode installer target install AuroraOS-5.2.1.200-x86_64 /host_targets/target.tar --tooling AuroraOS-5.2.1.200
-          sdk-manage target list
-          sb2 -t AuroraOS-5.2.1.200-x86_64 -R bash -ec '
+          runuser -u mersdk -- sdk-manage --mode installer tooling install AuroraOS-5.2.1.200 /host_targets/tooling.tar
+          runuser -u mersdk -- sdk-manage --mode installer target install AuroraOS-5.2.1.200-x86_64 /host_targets/target.tar --tooling AuroraOS-5.2.1.200
+          runuser -u mersdk -- sdk-manage target list
+          install -d -o mersdk -g "$(id -gn mersdk)" /home/mersdk/build-mb2
+          runuser -u mersdk -- sb2 -t AuroraOS-5.2.1.200-x86_64 -R bash -ec '
             eval "$(rpm --eval "%set_build_flags")"
-            cmake -S /work -B /work/build-mb2 \
+            cmake -S /work -B /home/mersdk/build-mb2 \
               -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
               -DGGML_NATIVE=OFF -DGGML_AVX=OFF -DGGML_AVX2=OFF \
               -DGGML_BMI2=OFF -DGGML_SSE42=OFF \
@@ -67,11 +68,12 @@ jobs:
               -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF \
               -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF \
               -DLLAMA_BUILD_APP=OFF -DLLAMA_BUILD_SERVER=ON
-            cmake --build /work/build-mb2 --target llama-server --parallel 2
+            cmake --build /home/mersdk/build-mb2 --target llama-server --parallel 2
           '
+          cp /home/mersdk/build-mb2/bin/llama-server /work/llama-server
           ENGINE
-          file build-mb2/bin/llama-server | grep 'ELF 64-bit.*x86-64'
-          tar -czf llama-server-aurora-mb2-x86_64.tar.gz -C build-mb2/bin llama-server
+          file llama-server | grep 'ELF 64-bit.*x86-64'
+          tar -czf llama-server-aurora-mb2-x86_64.tar.gz llama-server
 
       - uses: actions/upload-artifact@v4
         with:
