@@ -37,27 +37,63 @@ jobs:
           set -euo pipefail
           disk="$RUNNER_TEMP/aurora/emulators/5.2.1.200/Aurora_OS-5.2.1.200-Emulator_x86_64.qcow2"
           qemu=$(find "$RUNNER_TEMP/aurora" -name qemu-system-x86_64 -executable -print -quit)
-          test -f "$disk"
-          test -n "$qemu"
           lab="$RUNNER_TEMP/llama-emulator"
-          mkdir -p "$lab"/{ssh/defaultuser,configs,media}
-          ssh-keygen -q -t ed25519 -N '' -f "$lab/key"
-          cp "$lab/key.pub" "$lab/ssh/defaultuser/authorized_keys"
+          mkdir -p "$lab/rootfs" "$lab"/{configs,media,ssh}
+          "$(dirname "$qemu")/qemu-img" convert -O raw "$disk" "$lab/disk.raw"
+          offset=$(sfdisk --json "$lab/disk.raw" | jq -er '.partitiontable | .partitions[0].start * .sectorsize')
 
-          emulator_dir="$(dirname "$disk")/DefaultEmulator"
-          find "$emulator_dir" -maxdepth 3 -printf '%P\n'
-          if [ -d "$emulator_dir/vmshare" ]; then cp -R "$emulator_dir/vmshare/." "$lab/configs/"; fi
-          qemu_img="$(dirname "$qemu")/qemu-img"
-          "$qemu_img" convert -O raw "$disk" "$lab/disk.raw"
-          fdisk -l "$lab/disk.raw" | tee "$lab/partitions.log"
-          mkdir "$lab/rootfs"
-          if sudo mount -o loop,ro,offset=512 "$lab/disk.raw" "$lab/rootfs"; then
-            sudo find "$lab/rootfs" -maxdepth 5 \
-              \( -iname '*sshd*' -o -iname '*.network' -o -name 'grub.cfg' \) \
-              -printf '%P\n' | tee "$lab/guest-config.log"
-            sudo umount "$lab/rootfs"
-          fi
-          rm "$lab/disk.raw"
+          # Attach a smoke test to the disposable guest disk and return its result over serial.
+          cat > "$lab/llama-smoke.sh" <<'SMOKE'
+          #!/bin/bash
+          set -euo pipefail
+          test "$(uname -m)" = x86_64
+          grep '^VERSION_ID=5.2.1.200$' /etc/os-release
+          cd /opt/aurora-llama-test
+          ./llama-server -m stories260K.gguf -c 256 -t 2 -ngl 0 --host 127.0.0.1 --port 19090 > /tmp/aurora-llama.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          ready=
+          for attempt in {1..30}; do
+            if curl -fsS --max-time 2 http://127.0.0.1:19090/health; then ready=1; break; fi
+            if ! kill -0 "$server_pid"; then break; fi
+            sleep 1
+          done
+          if [ -z "$ready" ]; then cat /tmp/aurora-llama.log >&2; exit 1; fi
+          printf '\nCOMPLETION '
+          curl -fsS --max-time 90 -H 'Content-Type: application/json' \
+            -d '{"prompt":"Once upon a time","n_predict":12,"temperature":0,"seed":42}' \
+            http://127.0.0.1:19090/completion
+          printf '\n'
+          SMOKE
+          cat > "$lab/llama-smoke.service" <<'SERVICE'
+          [Unit]
+          Description=Aurora llama-server feasibility check
+          After=local-fs.target
+
+          [Service]
+          Type=oneshot
+          User=defaultuser
+          ExecStart=/opt/aurora-llama-test/llama-smoke.sh
+          StandardOutput=tty
+          StandardError=tty
+          TTYPath=/dev/ttyS0
+
+          [Install]
+          WantedBy=multi-user.target
+          SERVICE
+
+          sudo mount -o "loop,offset=$offset" "$lab/disk.raw" "$lab/rootfs"
+          trap 'sudo umount "$lab/rootfs"' EXIT
+          sudo install -d "$lab/rootfs/opt/aurora-llama-test"
+          sudo install -m 0755 llama-server "$lab/llama-smoke.sh" "$lab/rootfs/opt/aurora-llama-test/"
+          sudo install -m 0644 stories260K.gguf "$lab/rootfs/opt/aurora-llama-test/"
+          sudo install -m 0644 "$lab/llama-smoke.service" "$lab/rootfs/etc/systemd/system/"
+          sudo mkdir -p "$lab/rootfs/etc/systemd/system/multi-user.target.wants"
+          sudo ln -s ../llama-smoke.service "$lab/rootfs/etc/systemd/system/multi-user.target.wants/llama-smoke.service"
+          sudo cat "$lab/rootfs/etc/fstab" | tee "$lab/fstab.log"
+          sudo umount "$lab/rootfs"
+          trap - EXIT
+
           if test -c /dev/kvm && ! test -w /dev/kvm; then
             sudo chgrp "$(id -gn)" /dev/kvm
             sudo chmod g+rw /dev/kvm
@@ -66,73 +102,26 @@ jobs:
           if test -w /dev/kvm; then accelerator=(-accel kvm -cpu host); fi
           "$qemu" "${accelerator[@]}" -m 3072 -smp 2 -display none -no-reboot -snapshot \
             -vga none -device virtio-gpu,xres=360,yres=800 \
-            -drive "file=$disk,if=virtio,format=qcow2" \
-            -nic user,model=virtio-net-pci,mac=52:54:00:12:34:56,hostfwd=tcp:127.0.0.1:2223-:22 \
+            -drive "file=$lab/disk.raw,if=virtio,format=raw" \
+            -nic user,model=virtio-net-pci,mac=52:54:00:12:34:56,restrict=on \
             -virtfs "local,path=$lab/ssh,mount_tag=ssh,security_model=mapped,readonly=on" \
             -virtfs "local,path=$lab/configs,mount_tag=configs,security_model=mapped,readonly=on" \
             -virtfs "local,path=$lab/media,mount_tag=media,security_model=mapped,readonly=on" \
-            -monitor "unix:$lab/monitor.sock,server=on,wait=off" \
             -serial "file:$lab/console.log" > "$lab/qemu.log" 2>&1 &
           qemu_pid=$!
-          cleanup() {
-            result=$?
-            if [ "$result" -ne 0 ]; then
-              cat "$lab/qemu.log"
-              tail -80 "$lab/console.log"
-              python3 - "$lab" <<'PYTHON'
-          import pathlib
-          import socket
-          import sys
-
-          lab = pathlib.Path(sys.argv[1])
-          try:
-              with socket.socket(socket.AF_UNIX) as monitor:
-                  monitor.settimeout(2)
-                  monitor.connect(str(lab / "monitor.sock"))
-                  monitor.sendall(f"screendump {lab / 'display.ppm'}\n".encode())
-                  monitor.recv(4096)
-          except OSError as error:
-              print(error)
-          PYTHON
-            fi
-            kill "$qemu_pid" 2>/dev/null || true
-          }
-          trap cleanup EXIT
-          connection=(-o BatchMode=yes -o ConnectTimeout=4 -o StrictHostKeyChecking=accept-new
-            -o "UserKnownHostsFile=$lab/known_hosts" -i "$lab/key")
-          guest=defaultuser@127.0.0.1
-          for attempt in {1..30}; do
-            if ssh "${connection[@]}" -p 2223 "$guest" true 2>/dev/null; then break; fi
-            kill -0 "$qemu_pid" || { cat "$lab/qemu.log" >&2; exit 1; }
+          trap 'kill "$qemu_pid" 2>/dev/null || true' EXIT
+          for attempt in {1..60}; do
+            if grep -q '^COMPLETION .*}' "$lab/console.log"; then break; fi
+            if ! kill -0 "$qemu_pid"; then break; fi
             sleep 3
           done
-          ssh "${connection[@]}" -p 2223 "$guest" uname -m | grep -x x86_64
-          ssh "${connection[@]}" -p 2223 "$guest" cat /etc/os-release | grep '^VERSION_ID=5.2.1.200$'
-          scp -O "${connection[@]}" -P 2223 llama-server stories260K.gguf "$guest:"
-          cat > llama-smoke.sh <<'SMOKE'
-          set -euo pipefail
-          cd "$HOME"
-          chmod +x ./llama-server
-          ./llama-server -m stories260K.gguf -c 256 -t 2 -ngl 0 --host 127.0.0.1 --port 19090 > server.log 2>&1 &
-          server_pid=$!
-          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
-          until curl -fsS --max-time 2 http://127.0.0.1:19090/health; do
-            kill -0 "$server_pid" || { cat server.log >&2; exit 1; }
-            sleep 1
-          done
-          curl -fsS --max-time 90 -H 'Content-Type: application/json' \
-            -d '{"prompt":"Once upon a time","n_predict":12,"temperature":0,"seed":42}' \
-            http://127.0.0.1:19090/completion > completion.json
-          SMOKE
-          timeout 150 ssh "${connection[@]}" -p 2223 "$guest" 'bash -s' < llama-smoke.sh
-          scp -O "${connection[@]}" -P 2223 "$guest:completion.json" completion.json
-          jq -er '.content | select(type == "string" and test("\\S"))' completion.json
+          cat "$lab/qemu.log" "$lab/console.log"
+          tr -d '\r' < "$lab/console.log" | sed -n 's/^COMPLETION //p' |
+            jq -e -s 'any(.[]; (.content | type == "string" and test("\\S")) and .tokens_predicted > 0)'
 
       - name: Upload boot diagnostics
         if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: aurora-x86_64-boot-diagnostics
-          path: |
-            ${{ runner.temp }}/llama-emulator/*.log
-            ${{ runner.temp }}/llama-emulator/*.ppm
+          path: ${{ runner.temp }}/llama-emulator/*.log
