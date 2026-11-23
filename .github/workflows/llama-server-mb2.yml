@@ -1,0 +1,81 @@
+name: llama-server build with Aurora MB2
+
+on:
+  push:
+    branches: [feature/9-llama-cpp-aurora-feasibility]
+    paths: [.github/workflows/llama-server-mb2.yml]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout llama.cpp v1.0.0
+        uses: actions/checkout@v4
+        with:
+          repository: ggml-org/llama.cpp
+          ref: b1b770d90d94cad9e9ea5b993bdbc383a522fb28
+          persist-credentials: false
+
+      - name: Load the official MB2 build engine and x86_64 target
+        working-directory: ${{ runner.temp }}
+        run: |
+          set -euo pipefail
+          base=https://sdk-repo.omprussia.ru/sdk/repositories/MB2/repository-5.2.1.200-MB2/common
+          mkdir mb2
+          cd mb2
+
+          download() {
+            curl -fLsS --retry 3 --connect-timeout 30 "$base/$1" -o "$2"
+            checksum=$(curl -fLsS --retry 3 --connect-timeout 30 "$base/$1.sha1")
+            printf '%s  %s\n' "$checksum" "$2" | sha1sum -c -
+          }
+
+          download org.merproject.mersdkdocker/2022.12.12-1buildengine-docker.7z engine.7z
+          7z x -so -r engine.7z '*.tar' | docker load | tee engine-image.log
+          rm engine.7z
+          image=$(sed -n 's/^Loaded image: //p' engine-image.log)
+          test -n "$image"
+          docker image inspect "$image" --format '{{.Os}}/{{.Architecture}}' | grep -x linux/amd64
+          printf 'MB2_IMAGE=%s\n' "$image" >> "$GITHUB_ENV"
+
+          download org.merproject.targets.toolings.Aurora_Tooling_5.2.1.200/2022.12.12-1AuroraOS-5.2.1.200-SDK-Tooling-x86_64.tar.7z tooling.tar.7z
+          download org.merproject.targets.Aurora_Target_5.2.1.200_x86_64/2022.12.12-1-AuroraOS-5.2.1.200-SDK-Target-x86_64.tar.7z target.tar.7z
+          7z x -so -r tooling.tar.7z '*.tar' > tooling.tar
+          7z x -so -r target.tar.7z '*.tar' > target.tar
+          rm tooling.tar.7z target.tar.7z
+
+      - name: Build inside the MB2 x86_64 target
+        run: |
+          set -euo pipefail
+          # scratchbox2 configures the target inside the isolated build runner.
+          docker run --rm -i --privileged --entrypoint /bin/bash \
+            -v "$RUNNER_TEMP/mb2:/host_targets:ro" \
+            -v "$GITHUB_WORKSPACE:/work" "$MB2_IMAGE" -e -s <<'ENGINE'
+          sdk-manage --mode installer tooling install AuroraOS-5.2.1.200 /host_targets/tooling.tar
+          sdk-manage --mode installer target install AuroraOS-5.2.1.200-x86_64 /host_targets/target.tar --tooling AuroraOS-5.2.1.200
+          sdk-manage target list
+          sb2 -t AuroraOS-5.2.1.200-x86_64 -R bash -ec '
+            eval "$(rpm --eval "%set_build_flags")"
+            cmake -S /work -B /work/build-mb2 \
+              -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=OFF \
+              -DGGML_NATIVE=OFF -DGGML_AVX=OFF -DGGML_AVX2=OFF \
+              -DGGML_BMI2=OFF -DGGML_SSE42=OFF \
+              -DGGML_FMA=OFF -DGGML_F16C=OFF -DGGML_OPENMP=OFF \
+              -DLLAMA_OPENSSL=OFF -DLLAMA_BUILD_UI=OFF -DLLAMA_USE_PREBUILT_UI=OFF \
+              -DLLAMA_BUILD_TESTS=OFF -DLLAMA_BUILD_EXAMPLES=OFF \
+              -DLLAMA_BUILD_APP=OFF -DLLAMA_BUILD_SERVER=ON
+            cmake --build /work/build-mb2 --target llama-server --parallel 2
+          '
+          ENGINE
+          file build-mb2/bin/llama-server | grep 'ELF 64-bit.*x86-64'
+          tar -czf llama-server-aurora-mb2-x86_64.tar.gz -C build-mb2/bin llama-server
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: llama-server-aurora-mb2-x86_64
+          path: llama-server-aurora-mb2-x86_64.tar.gz
+          if-no-files-found: error
