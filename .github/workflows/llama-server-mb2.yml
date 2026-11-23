@@ -52,10 +52,11 @@ jobs:
           set -euo pipefail
           # scratchbox2 configures the target inside the isolated build runner.
           docker run --rm -i --privileged --entrypoint /bin/bash \
-            -v "$RUNNER_TEMP/mb2:/host_targets:ro" \
+            -v "$RUNNER_TEMP/mb2:/archives:ro" \
             -v "$GITHUB_WORKSPACE:/work" "$MB2_IMAGE" -e -s <<'ENGINE'
-          runuser -u mersdk -- sdk-manage --mode installer tooling install AuroraOS-5.2.1.200 /host_targets/tooling.tar
-          runuser -u mersdk -- sdk-manage --mode installer target install AuroraOS-5.2.1.200-x86_64 /host_targets/target.tar --tooling AuroraOS-5.2.1.200
+          install -d -o mersdk -g "$(id -gn mersdk)" /host_targets
+          runuser -u mersdk -- sdk-manage --mode installer tooling install AuroraOS-5.2.1.200 /archives/tooling.tar
+          runuser -u mersdk -- sdk-manage --mode installer target install AuroraOS-5.2.1.200-x86_64 /archives/target.tar --tooling AuroraOS-5.2.1.200
           runuser -u mersdk -- sdk-manage target list
           install -d -o mersdk -g "$(id -gn mersdk)" /home/mersdk/build-mb2
           runuser -u mersdk -- sb2 -t AuroraOS-5.2.1.200-x86_64 -R bash -ec '
